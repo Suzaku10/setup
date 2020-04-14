@@ -55,14 +55,14 @@ class GlobalTranslation {
     //Load string from json assets
 
     print("ini setup :${SetupSetting.setupApp.assetsLocalizationJson}");
+    if (_onLocaleChangedCallback != null) _onLocaleChangedCallback();
+    print("ini sesudah localChanged");
     String _jsonContent = await rootBundle
         .loadString(SetupSetting.setupApp.assetsLocalizationJson);
 
     _localizedValues = jsonDecode(_jsonContent);
 
     if (saveInPrefs) await setPreferredLanguage(language);
-
-    if (_onLocaleChangedCallback != null) _onLocaleChangedCallback();
   }
 
   set onLocalChangedCallback(VoidCallback callback) =>
