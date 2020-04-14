@@ -22,9 +22,9 @@ class GlobalTranslation {
           ? '** $key not found'
           : _localizedValues[key];
 
-  get currentLanguage => _locale == null ? '' : _locale.languageCode;
+  String get currentLanguage => _locale == null ? '' : _locale.languageCode;
 
-  get locale => _locale;
+  Locale get locale => _locale;
 
   // one time initialize;
   Future<void> init([String language]) async {
@@ -54,9 +54,8 @@ class GlobalTranslation {
 
     //Load string from json assets
 
-    print("ini setup :${SetupSetting.setupApp.assetsLocalizationJson}");
     if (_onLocaleChangedCallback != null) _onLocaleChangedCallback();
-    print("ini sesudah localChanged");
+
     String _jsonContent = await rootBundle
         .loadString(SetupSetting.setupApp.assetsLocalizationJson);
 
