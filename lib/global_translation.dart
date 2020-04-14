@@ -54,8 +54,9 @@ class GlobalTranslation {
 
     //Load string from json assets
 
+    print("ini setup :${SetupSetting.setupApp.assetsLocalizationJson}");
     String _jsonContent = await rootBundle
-        .loadString(SetupSetting.setupApp.assetsLocalizationJson ??= "assets/localization/language_${locale.languageCode}.json");
+        .loadString(SetupSetting.setupApp.assetsLocalizationJson);
 
     _localizedValues = jsonDecode(_jsonContent);
 
