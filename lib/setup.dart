@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:setup/adv_state.dart';
 import 'package:setup/application.dart';
 
-/// A Calculator.
 typedef Future<void> Fetcher();
 typedef Future<void> OnInit(BuildContext context);
 typedef Future<String> MinVer();
@@ -54,8 +53,8 @@ class Setup extends StatefulWidget {
 
   const Setup(
       {this.observer = const [],
-        this.theme,
-        this.localizationsDelegates,
+        @required this.theme,
+        @required this.localizationsDelegates,
         this.notifOnLaunch,
         this.notifOnMessage,
         this.notifOnResume,
@@ -64,14 +63,14 @@ class Setup extends StatefulWidget {
         this.minVer,
         this.latestVer,
         @required this.uiBuilder,
-        this.onInit,
+        @required this.onInit,
         this.onLink,
         this.supportLocales = const [
           const Locale('en', 'US'), // English
           const Locale('id', 'ID'),
         ],
         @required this.totalApiRequest,
-        SetupController controller,
+        @required SetupController controller,
         this.notifBackground})
       : assert(controller != null),
         this.controller = controller;
