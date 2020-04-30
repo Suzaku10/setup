@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:setup/setup.dart';
 
 class Application {
   static final Application _application = Application._internal();

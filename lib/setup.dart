@@ -1,5 +1,6 @@
 library setup;
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:setup/adv_state.dart';
 import 'package:setup/application.dart';
@@ -17,7 +18,7 @@ typedef Future<void> OnRetrieveDynamicLink(BuildContext context);
 typedef void NotifInit(BuildContext context);
 typedef void OnLink(BuildContext context, Uri deepLink);
 
-//final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 enum Status {
   failed,
@@ -111,23 +112,25 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
     super.initStateWithContext(context);
     if (widget.onInit != null) widget.onInit(context);
 //    application.onLink = widget.onLink;
-//    _firebaseMessaging.getToken().then((token) {
-//      print('ini t0ken :$token');
-//    });
-//    application.onNotif = _initNotif;
+    _firebaseMessaging.getToken().then((token) {
+      print('ini token :$token');
+    });
+
+    _initNotif(context);
 
     widget.controller.addListener(_update);
     widget.controller.setupState = this;
     widget.controller._totalApiRequest = widget.totalApiRequest;
   }
 
-//  void _initNotif(BuildContext context) {
-//    _firebaseMessaging.configure(
-//        onMessage: widget.notifOnMessage,
-//        onBackgroundMessage: widget.notifBackground,
-//        onLaunch: widget.notifOnLaunch,
-//        onResume: widget.notifOnResume);
-//  }
+  void _initNotif(BuildContext context) {
+    print('init notif');
+    _firebaseMessaging.configure(
+        onMessage: widget.notifOnMessage,
+        onBackgroundMessage: widget.notifBackground,
+        onLaunch: widget.notifOnLaunch,
+        onResume: widget.notifOnResume);
+  }
 
   void _settingInitialLink() async {
 //    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
@@ -207,7 +210,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
           setState(() {
             statusNow = Status.success;
             _settingInitialLink();
-//            _initNotif();
           });
         }
       }
@@ -276,7 +278,6 @@ class _NHomeState extends AdvState<NHome> {
   void initStateWithContext(BuildContext context) {
     super.initStateWithContext(context);
     _settingDynamicOnLink();
-//    application.onNotif(context);
   }
 }
 
