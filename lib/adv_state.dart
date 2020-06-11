@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AdvState<T extends StatefulWidget> extends State<T> {
   bool _firstRun = true;
@@ -9,9 +8,6 @@ abstract class AdvState<T extends StatefulWidget> extends State<T> {
   Color loadingBackgroundColor = Colors.black.withOpacity(0.3);
   bool withLoading = true;
   LoadingController controller = LoadingController();
-
-  SharedPreferences _prefs;
-  SharedPreferences get preferences => _prefs;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +24,7 @@ abstract class AdvState<T extends StatefulWidget> extends State<T> {
     );
   }
 
-  void initStateWithContext(BuildContext context) {
-    _getPreferences();
-  }
-
-  void _getPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
+  void initStateWithContext(BuildContext context);
 
   Widget advBuild(BuildContext context);
 

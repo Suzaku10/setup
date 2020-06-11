@@ -4,19 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:setup/adv_state.dart';
 import 'package:setup/application.dart';
-
-typedef Future<void> Fetcher();
-typedef Future<void> OnInit(BuildContext context);
-typedef Future<String> MinVer();
-typedef Future<String> LatestVer();
-typedef Future<void> NotifOnMessage(Map<String, dynamic> message);
-typedef Future<void> NotifOnResume(Map<String, dynamic> message);
-typedef Future<void> NotifOnLaunch(Map<String, dynamic> message);
-typedef Future<dynamic> OnBackgroundHandler(Map<String, dynamic> message);
-typedef Future<void> NotifTokenRefresh(BuildContext context, String token);
-typedef Future<void> OnRetrieveDynamicLink(BuildContext context);
-typedef void NotifInit(BuildContext context);
-typedef void OnLink(BuildContext context, Uri deepLink);
+import 'package:setup/setup_setting.dart';
 
 final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -40,7 +28,6 @@ class Setup extends StatefulWidget {
   final NotifOnMessage notifOnMessage;
   final NotifOnResume notifOnResume;
   final NotifOnLaunch notifOnLaunch;
-  final NotifTokenRefresh notifTokenRefresh;
   final OnBackgroundHandler notifBackground;
   final Fetcher fetcher;
   final MinVer minVer;
@@ -48,7 +35,6 @@ class Setup extends StatefulWidget {
   final SetupController controller;
   final UiBuilder uiBuilder;
   final OnInit onInit;
-  final OnLink onLink;
   final int totalApiRequest;
   final Iterable<Locale> supportLocales;
 
@@ -59,13 +45,11 @@ class Setup extends StatefulWidget {
         this.notifOnLaunch,
         this.notifOnMessage,
         this.notifOnResume,
-        this.notifTokenRefresh,
         this.fetcher,
         this.minVer,
         this.latestVer,
         @required this.uiBuilder,
         @required this.onInit,
-        this.onLink,
         this.supportLocales = const [
           const Locale('en', 'US'), // English
           const Locale('id', 'ID'),
@@ -84,7 +68,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   Status statusNow;
   String minVer;
   bool isDataFetched = false;
-  bool isRetrieveDynamicLink = false;
 
   @override
   Widget advBuild(BuildContext context) {
@@ -109,11 +92,10 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
 
   @override
   void initStateWithContext(BuildContext context) {
-    super.initStateWithContext(context);
     if (widget.onInit != null) widget.onInit(context);
-//    application.onLink = widget.onLink;
+    SetupSetting.refreshToken = _firebaseMessaging.getToken;
     _firebaseMessaging.getToken().then((token) {
-      print('ini token :$token');
+      SetupSetting.FCMToken = token;
     });
 
     _initNotif(context);
@@ -124,22 +106,11 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   }
 
   void _initNotif(BuildContext context) {
-    print('init notif');
     _firebaseMessaging.configure(
         onMessage: widget.notifOnMessage,
         onBackgroundMessage: widget.notifBackground,
         onLaunch: widget.notifOnLaunch,
         onResume: widget.notifOnResume);
-  }
-
-  void _settingInitialLink() async {
-//    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
-//    final Uri deepLink = data?.link;
-//    print("deepLink :  $deepLink");
-//    if (deepLink == null) return;
-//    var context = await application.completer.future;
-////    Toast.showToast(context, "FromInitialLink : $deepLink");
-//    application.onLink(context, deepLink);
   }
 
   void _getData() {
@@ -164,7 +135,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   }
 
   void _updateApps() {
-//    SingleShareHelper.updateApps(context);
   }
 
   void _fetchMinVersion() {
@@ -190,7 +160,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
         _checkVersion(minVer, latestVerResult).then((result) {
           setState(() {
             statusNow = result;
-            if (statusNow == Status.success) _settingInitialLink();
           });
         });
       }
@@ -209,7 +178,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
         } else {
           setState(() {
             statusNow = Status.success;
-            _settingInitialLink();
           });
         }
       }
@@ -221,19 +189,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   }
 
   Future<Status> _checkVersion(String minVersion, String latestVersion) async {
-//    int minVerFromServer = int.tryParse(minVersion.substring(minVersion.indexOf("+") + 1, minVersion.length));
-//    int latestVerFromServer =
-//        int.tryParse(latestVersion.substring(latestVersion.indexOf("+") + 1, latestVersion.length));
-//    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-//    int versionFromLocal = int.tryParse(packageInfo.buildNumber);
-//
-//    if (versionFromLocal < minVerFromServer) {
-//      return Status.mustUpdate;
-//    } else if (versionFromLocal < latestVerFromServer) {
-//      return Status.canUpdate;
-//    } else {
-//      return Status.success;
-//    }
   }
 }
 
@@ -261,22 +216,10 @@ class _NHomeState extends AdvState<NHome> {
   }
 
   void _settingDynamicOnLink() async {
-//    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
-//      final Uri deepLink = dynamicLink?.link;
-////      Toast.showToast(context, "FromOnLink");
-////      print("deeplink from OnLink $deepLink");
-//      if (deepLink != null) {
-//        application.onLink(context, deepLink);
-//      }
-//    }, onError: (OnLinkErrorException e) async {
-//      print('onLinkError');
-//      print(e.message);
-//    });
   }
 
   @override
   void initStateWithContext(BuildContext context) {
-    super.initStateWithContext(context);
     _settingDynamicOnLink();
   }
 }
