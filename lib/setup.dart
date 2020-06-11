@@ -92,11 +92,12 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
 
   @override
   void initStateWithContext(BuildContext context) {
-    if (widget.onInit != null) widget.onInit(context);
     SetupSetting.refreshToken = _firebaseMessaging.getToken;
     _firebaseMessaging.getToken().then((token) {
       SetupSetting.FCMToken = token;
+      print("ini dari dalem : ${SetupSetting.FCMToken}");
     });
+    if (widget.onInit != null) widget.onInit(context);
 
     _initNotif(context);
 
