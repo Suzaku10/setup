@@ -40,23 +40,23 @@ class Setup extends StatefulWidget {
 
   const Setup(
       {this.observer = const [],
-        @required this.theme,
-        @required this.localizationsDelegates,
-        this.notifOnLaunch,
-        this.notifOnMessage,
-        this.notifOnResume,
-        this.fetcher,
-        this.minVer,
-        this.latestVer,
-        @required this.uiBuilder,
-        @required this.onInit,
-        this.supportLocales = const [
-          const Locale('en', 'US'), // English
-          const Locale('id', 'ID'),
-        ],
-        @required this.totalApiRequest,
-        @required SetupController controller,
-        this.notifBackground})
+      @required this.theme,
+      @required this.localizationsDelegates,
+      this.notifOnLaunch,
+      this.notifOnMessage,
+      this.notifOnResume,
+      this.fetcher,
+      this.minVer,
+      this.latestVer,
+      @required this.uiBuilder,
+      @required this.onInit,
+      this.supportLocales = const [
+        const Locale('en', 'US'), // English
+        const Locale('id', 'ID'),
+      ],
+      @required this.totalApiRequest,
+      @required SetupController controller,
+      this.notifBackground})
       : assert(controller != null),
         this.controller = controller;
 
@@ -91,10 +91,9 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   }
 
   @override
-  void initStateWithContext(BuildContext context) async {
+  void initStateWithContext(BuildContext context) {
     SetupSetting.refreshToken = _firebaseMessaging.getToken;
-    SetupSetting.FCMToken = await _firebaseMessaging.getToken();
-
+    getFCMToken();
     if (widget.onInit != null) widget.onInit(context);
 
     _initNotif(context);
@@ -102,6 +101,11 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
     widget.controller.addListener(_update);
     widget.controller.setupState = this;
     widget.controller._totalApiRequest = widget.totalApiRequest;
+  }
+
+  void getFCMToken() async {
+    SetupSetting.FCMToken = await _firebaseMessaging.getToken();
+    print("ini dari dalem : ${SetupSetting.FCMToken}");
   }
 
   void _initNotif(BuildContext context) {
@@ -133,8 +137,7 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
     });
   }
 
-  void _updateApps() {
-  }
+  void _updateApps() {}
 
   void _fetchMinVersion() {
     widget.minVer().then((result) {
@@ -187,8 +190,7 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
     }
   }
 
-  Future<Status> _checkVersion(String minVersion, String latestVersion) async {
-  }
+  Future<Status> _checkVersion(String minVersion, String latestVersion) async {}
 }
 
 class NHome extends StatefulWidget {
@@ -214,8 +216,7 @@ class _NHomeState extends AdvState<NHome> {
     return widget.child;
   }
 
-  void _settingDynamicOnLink() async {
-  }
+  void _settingDynamicOnLink() async {}
 
   @override
   void initStateWithContext(BuildContext context) {
@@ -262,11 +263,11 @@ class SetupController extends ValueNotifier<SetupEditingValue> {
 
   SetupController({double progress, String description, bool isError})
       : super(progress == null && description == null && isError == null
-      ? SetupEditingValue.empty
-      : new SetupEditingValue(
-      progress: progress,
-      description: description,
-      isError: isError));
+            ? SetupEditingValue.empty
+            : new SetupEditingValue(
+                progress: progress,
+                description: description,
+                isError: isError));
 
   SetupController.fromValue(SetupEditingValue value)
       : super(value ?? SetupEditingValue.empty);
@@ -280,9 +281,9 @@ class SetupController extends ValueNotifier<SetupEditingValue> {
 class SetupEditingValue {
   const SetupEditingValue(
       {this.progress = 0.0,
-        this.description = "",
-        this.isError = false,
-        this.setupState});
+      this.description = "",
+      this.isError = false,
+      this.setupState});
 
   final double progress;
   final String description;
@@ -293,10 +294,10 @@ class SetupEditingValue {
 
   SetupEditingValue copyWith(
       {double progress,
-        String description,
-        bool isError,
-        _SetupState setupState,
-        List<bool> apiResultList}) {
+      String description,
+      bool isError,
+      _SetupState setupState,
+      List<bool> apiResultList}) {
     return new SetupEditingValue(
         progress: progress,
         description: description,
@@ -328,4 +329,3 @@ class SetupEditingValue {
   int get hashCode =>
       hashValues(progress.hashCode, description.hashCode, isError.hashCode);
 }
-
