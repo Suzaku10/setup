@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:setup/setup_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String _storageKey = SetupSetting.setupApp.appNameKey;
-List<String> _supportLanguages = SetupSetting.setupApp.supportedLanguages;
+String _storageKey = SetupSetting.appNameKey;
+List<String> _supportLanguages = SetupSetting.supportedLanguages;
 Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 class GlobalTranslation {
@@ -57,7 +57,7 @@ class GlobalTranslation {
     if (_onLocaleChangedCallback != null) _onLocaleChangedCallback();
 
     String _jsonContent = await rootBundle
-        .loadString(SetupSetting.setupApp.assetsLocalizationJson);
+        .loadString(SetupSetting.assetsLocalizationJson);
 
     _localizedValues = jsonDecode(_jsonContent);
 

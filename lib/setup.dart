@@ -8,16 +8,8 @@ typedef Future<void> Fetcher();
 typedef Future<void> OnInit(BuildContext context);
 typedef Future<String> MinVer();
 typedef Future<String> LatestVer();
-typedef Future<void> NotifOnMessage(Map<String, dynamic> message);
-typedef Future<void> NotifOnResume(Map<String, dynamic> message);
-typedef Future<void> NotifOnLaunch(Map<String, dynamic> message);
-typedef Future<dynamic> OnBackgroundHandler(Map<String, dynamic> message);
-typedef Future<void> NotifTokenRefresh(BuildContext context, String token);
 typedef Future<void> OnRetrieveDynamicLink(BuildContext context);
-typedef void NotifInit(BuildContext context);
 typedef void OnLink(BuildContext context, Uri deepLink);
-
-//final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 enum Status {
   failed,
@@ -36,11 +28,6 @@ class Setup extends StatefulWidget {
   final List<NavigatorObserver> observer;
   final ThemeData theme;
   final Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
-  final NotifOnMessage notifOnMessage;
-  final NotifOnResume notifOnResume;
-  final NotifOnLaunch notifOnLaunch;
-  final NotifTokenRefresh notifTokenRefresh;
-  final OnBackgroundHandler notifBackground;
   final Fetcher fetcher;
   final MinVer minVer;
   final LatestVer latestVer;
@@ -55,10 +42,6 @@ class Setup extends StatefulWidget {
       {this.observer = const [],
         @required this.theme,
         @required this.localizationsDelegates,
-        this.notifOnLaunch,
-        this.notifOnMessage,
-        this.notifOnResume,
-        this.notifTokenRefresh,
         this.fetcher,
         this.minVer,
         this.latestVer,
@@ -71,7 +54,7 @@ class Setup extends StatefulWidget {
         ],
         @required this.totalApiRequest,
         @required SetupController controller,
-        this.notifBackground})
+       })
       : assert(controller != null),
         this.controller = controller;
 
@@ -110,24 +93,11 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   void initStateWithContext(BuildContext context) {
     super.initStateWithContext(context);
     if (widget.onInit != null) widget.onInit(context);
-//    application.onLink = widget.onLink;
-//    _firebaseMessaging.getToken().then((token) {
-//      print('ini t0ken :$token');
-//    });
-//    application.onNotif = _initNotif;
 
     widget.controller.addListener(_update);
     widget.controller.setupState = this;
     widget.controller._totalApiRequest = widget.totalApiRequest;
   }
-
-//  void _initNotif(BuildContext context) {
-//    _firebaseMessaging.configure(
-//        onMessage: widget.notifOnMessage,
-//        onBackgroundMessage: widget.notifBackground,
-//        onLaunch: widget.notifOnLaunch,
-//        onResume: widget.notifOnResume);
-//  }
 
   void _settingInitialLink() async {
 //    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
@@ -207,7 +177,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
           setState(() {
             statusNow = Status.success;
             _settingInitialLink();
-//            _initNotif();
           });
         }
       }
@@ -219,19 +188,6 @@ class _SetupState extends AdvState<Setup> with WidgetsBindingObserver {
   }
 
   Future<Status> _checkVersion(String minVersion, String latestVersion) async {
-//    int minVerFromServer = int.tryParse(minVersion.substring(minVersion.indexOf("+") + 1, minVersion.length));
-//    int latestVerFromServer =
-//        int.tryParse(latestVersion.substring(latestVersion.indexOf("+") + 1, latestVersion.length));
-//    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-//    int versionFromLocal = int.tryParse(packageInfo.buildNumber);
-//
-//    if (versionFromLocal < minVerFromServer) {
-//      return Status.mustUpdate;
-//    } else if (versionFromLocal < latestVerFromServer) {
-//      return Status.canUpdate;
-//    } else {
-//      return Status.success;
-//    }
   }
 }
 
@@ -276,7 +232,6 @@ class _NHomeState extends AdvState<NHome> {
   void initStateWithContext(BuildContext context) {
     super.initStateWithContext(context);
     _settingDynamicOnLink();
-//    application.onNotif(context);
   }
 }
 
